@@ -1,7 +1,14 @@
 const questions = [
-    { question: "What is 2 + 2?", choices: ["3", "4", "5"], answer: "4" },
-    { question: "What is the capital of France?", choices: ["Berlin", "Madrid", "Paris"], answer: "Paris" },
-    { question: "What is 5 * 3?", choices: ["15", "10", "20"], answer: "15" }
+    { question: "What is the unit of force?", choices: ["Newton", "Watt", "Joule"], answer: "Newton" },
+    { question: "What is the acceleration due to gravity on Earth?", choices: ["9.8 m/s²", "5 m/s²", "12 m/s²"], answer: "9.8 m/s²" },
+    { question: "Which law states that an object at rest stays at rest unless acted upon by an external force?", choices: ["Newton's First Law", "Newton's Second Law", "Newton's Third Law"], answer: "Newton's First Law" },
+    { question: "What type of energy is stored in a stretched rubber band?", choices: ["Kinetic Energy", "Potential Energy", "Thermal Energy"], answer: "Potential Energy" },
+    { question: "Which of these is an example of a scalar quantity?", choices: ["Velocity", "Acceleration", "Temperature"], answer: "Temperature" },
+    { question: "What is the formula for kinetic energy?", choices: ["KE = 1/2 mv²", "KE = mgh", "KE = Fd"], answer: "KE = 1/2 mv²" },
+    { question: "What does Ohm's Law state?", choices: ["V = IR", "F = ma", "P = VI"], answer: "V = IR" },
+    { question: "Which type of wave requires a medium to travel?", choices: ["Electromagnetic Wave", "Sound Wave", "Light Wave"], answer: "Sound Wave" },
+    { question: "What is the SI unit of power?", choices: ["Joule", "Watt", "Newton"], answer: "Watt" },
+    { question: "Which planet has the strongest gravitational field?", choices: ["Earth", "Jupiter", "Mars"], answer: "Jupiter" }
 ];
 
 let currentQuestion = 0;
