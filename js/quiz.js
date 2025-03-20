@@ -6,13 +6,27 @@ const quizData = [
 ];
 
 let currentQuestionIndex = 0;
-let userAnswers = new Array(quizData.length).fill(""); 
+let userAnswers = JSON.parse(localStorage.getItem("quizAnswers")) || new Array(quizData.length).fill(""); 
+let startTime = localStorage.getItem("quizStartTime");
 
+// Start a 3-hour countdown
+if (!startTime) {
+    startTime = Date.now();
+    localStorage.setItem("quizStartTime", startTime);
+}
+
+const quizDuration = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+const endTime = parseInt(startTime) + quizDuration;
+
+// Initialize Quiz
 document.addEventListener("DOMContentLoaded", function () {
     loadQuestion();
     updateNavigator();
+    updateTimer();
+    setInterval(updateTimer, 1000);
 });
 
+// Load current question
 function loadQuestion() {
     if (currentQuestionIndex >= 0 && currentQuestionIndex < quizData.length) {
         document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
@@ -20,6 +34,24 @@ function loadQuestion() {
     } else {
         document.getElementById("question").textContent = "Gagal memuat soal!";
     }
+}
+
+// Timer function
+function updateTimer() {
+    let now = Date.now();
+    let remainingTime = endTime - now;
+
+    if (remainingTime <= 0) {
+        alert("Waktu habis! Jawaban akan dikumpulkan.");
+        goToAnswerPage();
+        return;
+    }
+
+    let hours = Math.floor(remainingTime / (1000 * 60 * 60));
+    let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+    document.getElementById("timer").textContent = `Sisa Waktu: ${hours}j ${minutes}m ${seconds}d`;
 }
 
 // Validate decimal answer format
@@ -43,6 +75,7 @@ function saveAnswer() {
         return;
     }
     userAnswers[currentQuestionIndex] = input;
+    localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
     updateNavigator();
     alert("Jawaban berhasil disimpan!");
 }
@@ -91,6 +124,7 @@ function goToQuestion(index) {
 // Submit quiz with confirmation
 function goToAnswerPage() {
     if (confirm("Apakah Anda yakin ingin mengumpulkan jawaban?")) {
+        localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
         alert("Jawaban berhasil dikumpulkan!");
         window.location.href = "answer.html";
     }
