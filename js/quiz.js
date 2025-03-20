@@ -9,7 +9,7 @@ let currentQuestionIndex = 0;
 let userAnswers = JSON.parse(localStorage.getItem("quizAnswers")) || new Array(quizData.length).fill(""); 
 let startTime = localStorage.getItem("quizStartTime");
 
-// Start a 3-hour countdown
+// If no start time, set it now
 if (!startTime) {
     startTime = Date.now();
     localStorage.setItem("quizStartTime", startTime);
@@ -18,15 +18,14 @@ if (!startTime) {
 const quizDuration = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
 const endTime = parseInt(startTime) + quizDuration;
 
-// Initialize Quiz
 document.addEventListener("DOMContentLoaded", function () {
     loadQuestion();
     updateNavigator();
     updateTimer();
-    setInterval(updateTimer, 1000);
+    setInterval(updateTimer, 1000); // Updates every second
 });
 
-// Load current question
+// Load the current question
 function loadQuestion() {
     if (currentQuestionIndex >= 0 && currentQuestionIndex < quizData.length) {
         document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
@@ -36,12 +35,13 @@ function loadQuestion() {
     }
 }
 
-// Timer function
+// Update timer and handle time expiration
 function updateTimer() {
     let now = Date.now();
     let remainingTime = endTime - now;
 
     if (remainingTime <= 0) {
+        clearInterval(updateTimer);
         alert("Waktu habis! Jawaban akan dikumpulkan.");
         goToAnswerPage();
         return;
@@ -54,26 +54,16 @@ function updateTimer() {
     document.getElementById("timer").textContent = `Sisa Waktu: ${hours}j ${minutes}m ${seconds}d`;
 }
 
-// Validate decimal answer format
-function validateInput() {
-    let input = document.getElementById("answer").value;
-    let errorMessage = document.getElementById("error-message");
-
-    let regex = /^\d+(\.\d{1})?$/;
-    if (!regex.test(input) && input !== "") {
-        errorMessage.textContent = "Jawaban harus berupa angka dengan satu desimal (e.g., 10.2)";
-    } else {
-        errorMessage.textContent = "";
-    }
-}
-
-// Save current answer
+// Save the user's answer
 function saveAnswer() {
     let input = document.getElementById("answer").value;
-    if (!/^\d+(\.\d{1})?$/.test(input) && input !== "") {
-        alert("Jawaban harus berupa angka dengan satu angka desimal!");
+    let regex = /^\d+(\.\d{1})?$/;
+
+    if (!regex.test(input) && input !== "") {
+        alert("Jawaban harus berupa angka dengan satu angka desimal! Contoh: 10.2");
         return;
     }
+
     userAnswers[currentQuestionIndex] = input;
     localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
     updateNavigator();
@@ -114,18 +104,19 @@ function updateNavigator() {
     document.getElementById("total-questions").textContent = quizData.length;
 }
 
-// Jump to specific question
+// Jump to a specific question
 function goToQuestion(index) {
     currentQuestionIndex = index;
     loadQuestion();
     updateNavigator();
 }
 
-// Submit quiz with confirmation
+// Submit quiz and redirect to answer.html
 function goToAnswerPage() {
-    if (confirm("Apakah Anda yakin ingin mengumpulkan jawaban?")) {
-        localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
-        alert("Jawaban berhasil dikumpulkan!");
-        window.location.href = "answer.html";
+    try {
+        localStorage.setItem("quizAnswers", JSON.stringify(userAnswers)); // Ensure answers are saved
+        window.location.href = "answer.html"; // Redirect to answer review page
+    } catch (error) {
+        alert("Terjadi kesalahan saat menyimpan jawaban. Silakan coba lagi.");
     }
 }
