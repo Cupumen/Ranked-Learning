@@ -20,7 +20,8 @@
             <p id="question" class="question-text">Loading question...</p>
 
             <label for="answer" class="input-label">Jawaban Anda:</label>
-            <input type="text" id="answer" class="answer-input" placeholder="e.g. 3.5" pattern="\d+(\.\d)?">
+            <input type="text" id="answer" class="answer-input" placeholder="e.g. 3.5" pattern="\d+(\.\d)?" required>
+            <p id="error-message" class="error-message"></p>
 
             <div class="button-group">
                 <button onclick="prevQuestion()" class="btn btn-secondary">Back</button>
