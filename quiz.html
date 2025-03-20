@@ -9,11 +9,23 @@
 <body>
 
     <h2>Quiz</h2>
-    <p id="question">Question goes here...</p>
-    
-    <button onclick="prevQuestion()">Back</button>
-    <button onclick="nextQuestion()">Next</button>
-    <button onclick="submitQuiz()">Submit</button>
+
+    <div id="quiz-container">
+        <p id="question">Question goes here...</p>
+
+        <div id="answers">
+            <label><input type="radio" name="answer" value="A"> <span id="optionA"></span></label><br>
+            <label><input type="radio" name="answer" value="B"> <span id="optionB"></span></label><br>
+            <label><input type="radio" name="answer" value="C"> <span id="optionC"></span></label><br>
+            <label><input type="radio" name="answer" value="D"> <span id="optionD"></span></label>
+        </div>
+
+        <button onclick="prevQuestion()">Back</button>
+        <button onclick="nextQuestion()">Next</button>
+        <button onclick="submitQuiz()">Submit</button>
+    </div>
+
+    <p id="timer">Time Left: 3:00:00</p>
 
     <script src="js/quiz.js"></script>
 
