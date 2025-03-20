@@ -9,14 +9,10 @@ const questions = [
 ];
 
 const userAnswers = new Array(questions.length).fill(null);
-const flaggedQuestions = new Array(questions.length).fill(false);
 
 function showQuestion() {
     document.getElementById("question").innerText = questions[currentQuestion].question;
     document.getElementById("answer").value = userAnswers[currentQuestion] || "";
-
-    // Show submit button only on last question
-    document.getElementById("submit-btn").style.display = currentQuestion === questions.length - 1 ? "inline-block" : "none";
 }
 
 function nextQuestion() {
@@ -42,35 +38,10 @@ function saveAnswer() {
     }
 }
 
-function submitQuiz() {
-    if (!confirm("Apakah Anda yakin ingin mengumpulkan jawaban?")) {
-        return;
-    }
-
+function goToAnswerPage() {
     saveAnswer();
-    clearInterval(timerInterval);
-
-    let score = 0;
-    for (let i = 0; i < questions.length; i++) {
-        if (userAnswers[i] === questions[i].correct) {
-            score++;
-        }
-    }
-
-    let finalScore = (score / questions.length) * 100; // Scale to 100
-    alert(`Quiz submitted! Your score: ${finalScore.toFixed(1)} / 100`);
-    updateLeaderboard(finalScore);
-    window.location.href = "dashboard.html";
-}
-
-function updateLeaderboard(score) {
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-
-    leaderboard.push({ name: user.fullName, score: score });
-    leaderboard.sort((a, b) => b.score - a.score);
-
-    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+    localStorage.setItem("userAnswers", JSON.stringify(userAnswers));
+    window.location.href = "answer.html";
 }
 
 // Timer function
@@ -78,7 +49,7 @@ function startTimer() {
     timerInterval = setInterval(() => {
         if (timeRemaining <= 0) {
             clearInterval(timerInterval);
-            submitQuiz();
+            goToAnswerPage();
         } else {
             timeRemaining--;
             const hours = Math.floor(timeRemaining / 3600);
@@ -89,36 +60,7 @@ function startTimer() {
     }, 1000);
 }
 
-// Generate navigation buttons
-function generateNavButtons() {
-    const navContainer = document.getElementById("question-nav");
-    navContainer.innerHTML = "";
-    questions.forEach((_, index) => {
-        const btn = document.createElement("button");
-        btn.innerText = index + 1;
-        btn.className = "nav-btn";
-        btn.onclick = () => goToQuestion(index);
-        if (flaggedQuestions[index]) {
-            btn.classList.add("flagged");
-        }
-        navContainer.appendChild(btn);
-    });
-}
-
-function goToQuestion(index) {
-    saveAnswer();
-    currentQuestion = index;
-    showQuestion();
-}
-
-// Flag a question
-function toggleFlag() {
-    flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion];
-    generateNavButtons();
-}
-
 window.onload = () => {
     showQuestion();
     startTimer();
-    generateNavButtons();
 };
