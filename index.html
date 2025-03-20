@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My GitHub Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timed Quiz</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to My Website!</h1>
-    <p>This site is hosted on GitHub Pages.</p>
+    <div id="quiz-container">
+        <h1>Timed Quiz</h1>
+        <p id="timer">Time: 30s</p>
+        <p id="question">Loading...</p>
+        <div id="choices"></div>
+        <p id="score">Score: 0</p>
+        <button id="start-btn">Start Quiz</button>
+    </div>
+    <div id="leaderboard-container">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboard"></ul>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
