@@ -3,38 +3,16 @@ let timeRemaining = 3 * 60 * 60; // 3 hours in seconds
 let timerInterval;
 
 const questions = [
-    {
-        question: "What is Newton's First Law?",
-        options: ["Object stays in motion", "Force equals mass times acceleration", "Every action has a reaction", "Gravity pulls objects down"],
-        correct: "A"
-    },
-    {
-        question: "What is the speed of light?",
-        options: ["3,000 km/s", "300,000 km/s", "30,000 km/s", "3,000,000 km/s"],
-        correct: "B"
-    },
-    {
-        question: "What is the formula for force?",
-        options: ["F = mv", "F = ma", "F = mgh", "F = 1/2mv²"],
-        correct: "B"
-    }
+    { question: "What is the acceleration due to gravity on Earth (m/s²)?", correct: 9.8 },
+    { question: "What is the speed of light in vacuum (10⁸ m/s)?", correct: 3.0 },
+    { question: "What is Planck's constant (6.6x10⁻³⁴ J·s)?", correct: 6.6 }
 ];
 
 const userAnswers = new Array(questions.length).fill(null);
 
 function showQuestion() {
     document.getElementById("question").innerText = questions[currentQuestion].question;
-    document.getElementById("optionA").innerText = questions[currentQuestion].options[0];
-    document.getElementById("optionB").innerText = questions[currentQuestion].options[1];
-    document.getElementById("optionC").innerText = questions[currentQuestion].options[2];
-    document.getElementById("optionD").innerText = questions[currentQuestion].options[3];
-
-    const answerButtons = document.getElementsByName("answer");
-    answerButtons.forEach(button => button.checked = false);
-
-    if (userAnswers[currentQuestion]) {
-        document.querySelector(`input[value="${userAnswers[currentQuestion]}"]`).checked = true;
-    }
+    document.getElementById("answer").value = userAnswers[currentQuestion] || "";
 }
 
 function nextQuestion() {
@@ -54,9 +32,11 @@ function prevQuestion() {
 }
 
 function saveAnswer() {
-    const selectedOption = document.querySelector('input[name="answer"]:checked');
-    if (selectedOption) {
-        userAnswers[currentQuestion] = selectedOption.value;
+    const answerInput = document.getElementById("answer").value;
+    if (answerInput.match(/^\d+(\.\d)?$/)) { // Allow only decimal numbers with 1 decimal place
+        userAnswers[currentQuestion] = parseFloat(answerInput);
+    } else {
+        alert("Invalid input! Please enter a number with one decimal place.");
     }
 }
 
