@@ -45,3 +45,17 @@ button {
     color: red;
     margin-top: 20px;
 }
+
+#question-nav {
+    margin-top: 20px;
+}
+
+.nav-btn {
+    padding: 5px 10px;
+    margin: 5px;
+    font-size: 14px;
+}
+
+.flagged {
+    background-color: yellow;
+}
