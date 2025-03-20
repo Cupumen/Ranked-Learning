@@ -10,10 +10,23 @@
 
     <div id="quiz-container">
         <h1>Physics Quiz</h1>
+        
+        <!-- Timer -->
+        <p id="timer">Time Left: 3:00:00</p>
+
+        <!-- Question and Options -->
         <p id="question"></p>
         <div id="options"></div>
+
+        <!-- Navigation Buttons -->
+        <button id="back-btn" onclick="prevQuestion()" disabled>Back</button>
         <button id="next-btn" onclick="nextQuestion()">Next</button>
-        <p id="score-display"></p>
+        <button id="submit-btn" onclick="submitQuiz()" style="display: none;">Submit Quiz</button>
+
+        <!-- Progress Tracker -->
+        <p id="progress"></p>
+
+        <!-- Back to Dashboard after submission -->
         <a href="dashboard.html" id="dashboard-btn" style="display: none;">
             <button>Back to Dashboard</button>
         </a>
