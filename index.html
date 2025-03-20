@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
 
-    <div id="login-container">
-        <h1>Student Login</h1>
-        <form onsubmit="return validateLogin()">
-            <input type="text" id="student-id" placeholder="Enter ID" required>
-            <input type="password" id="student-password" placeholder="Enter Password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p id="login-error" style="color: red;"></p>
-    </div>
+    <h2>Login</h2>
 
-    <script src="script.js"></script>
+    <form onsubmit="login(event)">
+        <input type="text" id="login-id" placeholder="Enter ID" required><br>
+        <input type="password" id="login-password" placeholder="Enter Password" required><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <script src="js/login.js"></script>
+
 </body>
 </html>
