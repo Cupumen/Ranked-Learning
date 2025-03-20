@@ -8,6 +8,7 @@ if (!localStorage.getItem("users")) {
     localStorage.setItem("users", JSON.stringify(users));
 }
 
+// Login function
 function login(event) {
     event.preventDefault();
 
@@ -23,7 +24,7 @@ function login(event) {
         if (user.role === "admin") {
             window.location.href = "admin.html";
         } else {
-            // Reset the quiz start time on login
+            // Reset the quiz start time when starting a new session
             localStorage.setItem("quizStartTime", Date.now());
             window.location.href = "dashboard.html";
         }
@@ -36,8 +37,15 @@ function login(event) {
 document.addEventListener("DOMContentLoaded", function () {
     const loggedInUser = localStorage.getItem("loggedInUser");
 
-    if (!loggedInUser) {
+    // Redirect if not logged in AND not already on the login page
+    if (!loggedInUser && !window.location.pathname.endsWith("index.html")) {
         alert("Please log in first.");
         window.location.href = "index.html";
     }
 });
+
+// Logout function
+function logout() {
+    localStorage.removeItem("loggedInUser"); 
+    window.location.href = "index.html"; 
+}
