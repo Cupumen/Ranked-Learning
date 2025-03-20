@@ -12,15 +12,21 @@
     <p id="description">Jawablah dengan desimal satu angka setelah koma. Contoh: 10.2 atau 9.3</p>
 
     <div id="quiz-container">
-        <p id="question">Question goes here...</p>
+        <p id="question">Loading question...</p>
 
         <label for="answer">Your Answer:</label>
-        <input type="text" id="answer" placeholder="e.g. 3.5" pattern="\d+(\.\d)?" required>
+        <input type="text" id="answer" placeholder="e.g. 3.5" pattern="\d+(\.\d)?">
 
-        <button onclick="prevQuestion()">Back</button>
-        <button onclick="nextQuestion()">Next</button>
-        <button onclick="submitQuiz()">Submit</button>
+        <div id="nav-buttons">
+            <button onclick="prevQuestion()">Back</button>
+            <button onclick="nextQuestion()">Next</button>
+            <button id="submit-btn" onclick="submitQuiz()" style="display: none;">Submit</button>
+        </div>
+
+        <button id="flag-btn" onclick="toggleFlag()">🚩 Flag Question</button>
     </div>
+
+    <div id="question-nav"></div>
 
     <p id="timer">Time Left: 3:00:00</p>
 
