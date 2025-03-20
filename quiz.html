@@ -8,30 +8,37 @@
 </head>
 <body>
 
-    <h2>Try Out OSK 2025</h2>
-    <p id="description">Jawablah dengan desimal satu angka setelah koma. Contoh: 10.2 atau 9.3</p>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Try Out OSK 2025</h1>
+            <p class="description">Jawablah dengan desimal satu angka setelah koma. Contoh: <strong>10.2</strong> atau <strong>9.3</strong></p>
+        </header>
 
-    <div id="quiz-container">
-        <p id="question">Loading question...</p>
+        <!-- Quiz Section -->
+        <div id="quiz-container">
+            <p id="question" class="question-text">Loading question...</p>
 
-        <label for="answer">Your Answer:</label>
-        <input type="text" id="answer" placeholder="e.g. 3.5" pattern="\d+(\.\d)?">
+            <label for="answer" class="input-label">Jawaban Anda:</label>
+            <input type="text" id="answer" class="answer-input" placeholder="e.g. 3.5" pattern="\d+(\.\d)?">
 
-        <div id="nav-buttons">
-            <button onclick="prevQuestion()">Back</button>
-            <button onclick="saveAnswer()">Save</button>
-            <button onclick="nextQuestion()">Next</button>
-            <button id="submit-btn" onclick="goToAnswerPage()">Submit</button>
+            <div class="button-group">
+                <button onclick="prevQuestion()" class="btn btn-secondary">Back</button>
+                <button onclick="saveAnswer()" class="btn btn-primary">Save</button>
+                <button onclick="nextQuestion()" class="btn btn-secondary">Next</button>
+                <button id="submit-btn" onclick="goToAnswerPage()" class="btn btn-submit">Submit</button>
+            </div>
         </div>
-    </div>
 
-    <!-- ✅ Question Navigator Widget -->
-    <div id="question-nav">
-        <p>Total Questions: <span id="total-questions">0</span></p>
-        <div id="question-tracker" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
-    </div>
+        <!-- Question Tracker -->
+        <div id="question-nav">
+            <p>Total Questions: <span id="total-questions">0</span></p>
+            <div id="question-tracker"></div>
+        </div>
 
-    <p id="timer">Time Left: 3:00:00</p>
+        <!-- Timer -->
+        <p id="timer">Time Left: <span id="time-left">3:00:00</span></p>
+    </div>
 
     <script src="js/quiz.js"></script>
 
