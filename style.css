@@ -4,7 +4,7 @@ body {
     margin: 20px;
 }
 
-#login-container, #quiz-container {
+#login-container, #dashboard-container, #leaderboard-container {
     max-width: 400px;
     margin: auto;
     padding: 20px;
@@ -16,4 +16,19 @@ button {
     padding: 10px;
     margin-top: 10px;
     cursor: pointer;
+}
+
+.buttons a {
+    text-decoration: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
 }
