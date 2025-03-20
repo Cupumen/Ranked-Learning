@@ -6,40 +6,106 @@ const quizData = [
 
 let currentQuestionIndex = 0;
 let score = 0;
+let userAnswers = JSON.parse(localStorage.getItem("userAnswers")) || new Array(quizData.length).fill(null);
+let timeLeft = JSON.parse(localStorage.getItem("quizTimeLeft")) || 3 * 60 * 60; // 3 hours in seconds
 const user = JSON.parse(localStorage.getItem("loggedInUser"));
 
 function loadQuestion() {
-    if (currentQuestionIndex < quizData.length) {
-        document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
-        let optionsHtml = "";
-        quizData[currentQuestionIndex].options.forEach(option => {
-            optionsHtml += `<button onclick="checkAnswer('${option}')">${option}</button>`;
-        });
-        document.getElementById("options").innerHTML = optionsHtml;
-    } else {
-        endQuiz();
+    document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
+    
+    let optionsHtml = "";
+    quizData[currentQuestionIndex].options.forEach(option => {
+        let checked = userAnswers[currentQuestionIndex] === option ? "checked" : "";
+        optionsHtml += `<label><input type="radio" name="answer" value="${option}" ${checked}> ${option}</label><br>`;
+    });
+    document.getElementById("options").innerHTML = optionsHtml;
+
+    updateProgress();
+    updateButtons();
+}
+
+// Save answer
+function saveAnswer() {
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    if (selectedOption) {
+        userAnswers[currentQuestionIndex] = selectedOption.value;
+        localStorage.setItem("userAnswers", JSON.stringify(userAnswers));
     }
 }
 
-function checkAnswer(selectedOption) {
-    if (selectedOption === quizData[currentQuestionIndex].answer) {
-        score += 10;
+// Navigate to the next question
+function nextQuestion() {
+    saveAnswer();
+    if (currentQuestionIndex < quizData.length - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
     }
-    currentQuestionIndex++;
-    loadQuestion();
 }
 
-function endQuiz() {
-    document.getElementById("question").textContent = "Quiz Completed!";
+// Navigate to the previous question
+function prevQuestion() {
+    saveAnswer();
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion();
+    }
+}
+
+// Update progress widget
+function updateProgress() {
+    const answeredCount = userAnswers.filter(ans => ans !== null).length;
+    document.getElementById("progress").textContent = `Answered: ${answeredCount} / ${quizData.length}`;
+}
+
+// Update button visibility
+function updateButtons() {
+    document.getElementById("back-btn").disabled = currentQuestionIndex === 0;
+    document.getElementById("next-btn").style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
+    document.getElementById("submit-btn").style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
+}
+
+// Timer function
+function startTimer() {
+    const timerElement = document.getElementById("timer");
+    const timerInterval = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitQuiz();
+        } else {
+            timeLeft--;
+            localStorage.setItem("quizTimeLeft", JSON.stringify(timeLeft));
+            let hours = Math.floor(timeLeft / 3600);
+            let minutes = Math.floor((timeLeft % 3600) / 60);
+            let seconds = timeLeft % 60;
+            timerElement.textContent = `Time Left: ${hours}:${minutes}:${seconds}`;
+        }
+    }, 1000);
+}
+
+// Submit the quiz
+function submitQuiz() {
+    saveAnswer();
+    let finalScore = 0;
+    for (let i = 0; i < quizData.length; i++) {
+        if (userAnswers[i] === quizData[i].answer) {
+            finalScore += 10;
+        }
+    }
+
+    document.getElementById("question").textContent = "Quiz Submitted!";
     document.getElementById("options").innerHTML = "";
-    document.getElementById("score-display").textContent = `Your Score: ${score}`;
+    document.getElementById("score-display").textContent = `Your Score: ${finalScore}`;
     document.getElementById("next-btn").style.display = "none";
+    document.getElementById("back-btn").style.display = "none";
+    document.getElementById("submit-btn").style.display = "none";
     document.getElementById("dashboard-btn").style.display = "block";
 
-    // Save score to LocalStorage for leaderboard
-    saveScore(user.name, score);
+    saveScore(user.name, finalScore);
+    localStorage.removeItem("quizTimeLeft");
+    localStorage.removeItem("userAnswers");
 }
 
+// Save score to leaderboard
 function saveScore(name, score) {
     let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
     leaderboard.push({ name, score });
@@ -47,11 +113,13 @@ function saveScore(name, score) {
     localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 }
 
+// Load quiz
 if (window.location.pathname.includes("quiz.html")) {
     loadQuestion();
+    startTimer();
 }
 
-// Load leaderboard dynamically
+// Load leaderboard
 if (window.location.pathname.includes("leaderboard.html")) {
     const leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
     let leaderboardHtml = "";
