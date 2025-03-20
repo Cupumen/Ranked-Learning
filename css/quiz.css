@@ -9,7 +9,7 @@
 }
 
 body {
-    background-color: #f5f7fa;
+    background-color: #f0f0f0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,18 +28,18 @@ body {
 }
 
 h1 {
-    color: #333;
+    color: #222;
     font-size: 24px;
 }
 
 .description {
     font-size: 14px;
-    color: #666;
+    color: #555;
     margin-bottom: 20px;
 }
 
 #quiz-container {
-    background: #eef2ff;
+    background: #ebebeb;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -56,13 +56,13 @@ h1 {
     display: block;
     margin-bottom: 5px;
     font-size: 14px;
-    color: #555;
+    color: #444;
 }
 
 .answer-input {
     width: 100%;
     padding: 10px;
-    border: 2px solid #bbb;
+    border: 2px solid #888;
     border-radius: 8px;
     font-size: 16px;
     text-align: center;
@@ -70,8 +70,14 @@ h1 {
 }
 
 .answer-input:focus {
-    border-color: #007bff;
+    border-color: #000;
     outline: none;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
 }
 
 .button-group {
@@ -91,30 +97,30 @@ h1 {
 }
 
 .btn-primary {
-    background: #007bff;
+    background: #333;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #0056b3;
+    background: #111;
 }
 
 .btn-secondary {
-    background: #ddd;
-    color: #333;
+    background: #888;
+    color: white;
 }
 
 .btn-secondary:hover {
-    background: #ccc;
+    background: #666;
 }
 
 .btn-submit {
-    background: #28a745;
+    background: #222;
     color: white;
 }
 
 .btn-submit:hover {
-    background: #218838;
+    background: #111;
 }
 
 #question-nav {
@@ -141,7 +147,7 @@ h1 {
 }
 
 #question-tracker button.answered {
-    background: #4caf50;
+    background: #333;
     color: white;
 }
 
@@ -151,12 +157,12 @@ h1 {
 }
 
 #question-tracker button:hover {
-    background: #666;
+    background: #444;
 }
 
 #timer {
     font-size: 16px;
     font-weight: 600;
     margin-top: 10px;
-    color: #d9534f;
+    color: #333;
 }
