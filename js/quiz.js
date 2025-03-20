@@ -46,11 +46,13 @@ function goToAnswerPage() {
     window.location.href = "answer.html";
 }
 
-// Question Navigator Widget
+// ✅ FIX: Question Navigator Widget now correctly updates!
 function updateNavigator() {
-    document.getElementById("total-questions").innerText = questions.length;
+    const totalQuestionsElem = document.getElementById("total-questions");
+    totalQuestionsElem.innerText = questions.length; // ✅ FIX: Correctly set the total questions
+
     const tracker = document.getElementById("question-tracker");
-    tracker.innerHTML = "";
+    tracker.innerHTML = ""; // Clear previous buttons before re-rendering
 
     questions.forEach((_, index) => {
         const btn = document.createElement("button");
@@ -60,11 +62,16 @@ function updateNavigator() {
             currentQuestion = index;
             showQuestion();
         };
+        btn.style.margin = "2px";
+        btn.style.padding = "5px";
+        btn.style.width = "40px";
+
         if (userAnswers[index] !== null) {
             btn.style.backgroundColor = "green"; // ✔ Answered
         } else {
             btn.style.backgroundColor = "gray"; // ⚪ Unanswered
         }
+
         tracker.appendChild(btn);
     });
 }
@@ -85,7 +92,9 @@ function startTimer() {
     }, 1000);
 }
 
+// ✅ FIX: Ensure the navigator updates properly when the page loads
 window.onload = () => {
     showQuestion();
     startTimer();
+    updateNavigator();
 };
