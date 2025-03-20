@@ -13,6 +13,7 @@ const userAnswers = new Array(questions.length).fill(null);
 function showQuestion() {
     document.getElementById("question").innerText = questions[currentQuestion].question;
     document.getElementById("answer").value = userAnswers[currentQuestion] || "";
+    updateNavigator();
 }
 
 function nextQuestion() {
@@ -33,15 +34,39 @@ function prevQuestion() {
 
 function saveAnswer() {
     const answerInput = document.getElementById("answer").value;
-    if (answerInput.match(/^\d+(\.\d)?$/)) { // Allow only decimal numbers with 1 decimal place
+    if (answerInput.match(/^\d+(\.\d)?$/)) {
         userAnswers[currentQuestion] = parseFloat(answerInput);
     }
+    updateNavigator();
 }
 
 function goToAnswerPage() {
     saveAnswer();
     localStorage.setItem("userAnswers", JSON.stringify(userAnswers));
     window.location.href = "answer.html";
+}
+
+// Question Navigator Widget
+function updateNavigator() {
+    document.getElementById("total-questions").innerText = questions.length;
+    const tracker = document.getElementById("question-tracker");
+    tracker.innerHTML = "";
+
+    questions.forEach((_, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = index + 1;
+        btn.onclick = () => {
+            saveAnswer();
+            currentQuestion = index;
+            showQuestion();
+        };
+        if (userAnswers[index] !== null) {
+            btn.style.backgroundColor = "green"; // ✔ Answered
+        } else {
+            btn.style.backgroundColor = "gray"; // ⚪ Unanswered
+        }
+        tracker.appendChild(btn);
+    });
 }
 
 // Timer function
