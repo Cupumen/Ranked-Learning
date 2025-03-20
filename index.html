@@ -3,32 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timed Quiz</title>
+    <title>Physics Timed Quiz</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <!-- Login Page -->
     <div id="login-container">
         <h1>Student Login</h1>
-        <input type="text" id="student-id" placeholder="Enter ID">
-        <input type="password" id="student-password" placeholder="Enter Password">
-        <button onclick="login()">Login</button>
+        <form action="quiz.html" onsubmit="return validateLogin()">
+            <input type="text" id="student-id" placeholder="Enter ID" required>
+            <input type="password" id="student-password" placeholder="Enter Password" required>
+            <button type="submit">Login</button>
+        </form>
         <p id="login-error" style="color: red;"></p>
     </div>
 
-    <div id="quiz-container" style="display: none;">
-        <h1>Timed Quiz</h1>
-        <p id="timer">Time: 30s</p>
-        <p id="question">Loading...</p>
-        <div id="choices"></div>
-        <p id="score">Score: 0</p>
-        <button id="start-btn">Start Quiz</button>
-    </div>
+    <script>
+        function validateLogin() {
+            const enteredId = document.getElementById("student-id").value;
+            const enteredPassword = document.getElementById("student-password").value;
 
-    <div id="leaderboard-container">
-        <h2>Leaderboard</h2>
-        <ul id="leaderboard"></ul>
-    </div>
+            if (enteredId === "test" && enteredPassword === "password123") {
+                return true; // Redirect to quiz.html
+            } else {
+                document.getElementById("login-error").textContent = "Invalid ID or Password!";
+                return false; // Prevent form submission
+            }
+        }
+    </script>
 
-    <script src="script.js"></script>
 </body>
 </html>
