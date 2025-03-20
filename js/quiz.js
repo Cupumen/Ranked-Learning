@@ -9,10 +9,14 @@ const questions = [
 ];
 
 const userAnswers = new Array(questions.length).fill(null);
+const flaggedQuestions = new Array(questions.length).fill(false);
 
 function showQuestion() {
     document.getElementById("question").innerText = questions[currentQuestion].question;
     document.getElementById("answer").value = userAnswers[currentQuestion] || "";
+
+    // Show submit button only on last question
+    document.getElementById("submit-btn").style.display = currentQuestion === questions.length - 1 ? "inline-block" : "none";
 }
 
 function nextQuestion() {
@@ -35,8 +39,6 @@ function saveAnswer() {
     const answerInput = document.getElementById("answer").value;
     if (answerInput.match(/^\d+(\.\d)?$/)) { // Allow only decimal numbers with 1 decimal place
         userAnswers[currentQuestion] = parseFloat(answerInput);
-    } else {
-        alert("Invalid input! Please enter a number with one decimal place.");
     }
 }
 
@@ -71,6 +73,7 @@ function updateLeaderboard(score) {
     localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 }
 
+// Timer function
 function startTimer() {
     timerInterval = setInterval(() => {
         if (timeRemaining <= 0) {
@@ -86,7 +89,36 @@ function startTimer() {
     }, 1000);
 }
 
+// Generate navigation buttons
+function generateNavButtons() {
+    const navContainer = document.getElementById("question-nav");
+    navContainer.innerHTML = "";
+    questions.forEach((_, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = index + 1;
+        btn.className = "nav-btn";
+        btn.onclick = () => goToQuestion(index);
+        if (flaggedQuestions[index]) {
+            btn.classList.add("flagged");
+        }
+        navContainer.appendChild(btn);
+    });
+}
+
+function goToQuestion(index) {
+    saveAnswer();
+    currentQuestion = index;
+    showQuestion();
+}
+
+// Flag a question
+function toggleFlag() {
+    flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion];
+    generateNavButtons();
+}
+
 window.onload = () => {
     showQuestion();
     startTimer();
+    generateNavButtons();
 };
