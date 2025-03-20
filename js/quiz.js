@@ -139,5 +139,9 @@ function logout() {
 function updateNavigationButtons() {
     document.getElementById("prev-btn").style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
     document.getElementById("next-btn").style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
-    document.getElementById("submit-btn").style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
+    
+    // Ensure submit button is always visible, but only enabled if at the last question
+    let submitBtn = document.getElementById("submit-btn");
+    submitBtn.style.display = "inline-block"; 
+    submitBtn.disabled = currentQuestionIndex !== quizData.length - 1;
 }
