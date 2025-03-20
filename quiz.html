@@ -19,12 +19,17 @@
 
         <div id="nav-buttons">
             <button onclick="prevQuestion()">Back</button>
+            <button onclick="saveAnswer()">Save</button>
             <button onclick="nextQuestion()">Next</button>
             <button id="submit-btn" onclick="goToAnswerPage()">Submit</button>
         </div>
     </div>
 
-    <div id="question-nav"></div>
+    <!-- Question Navigator Widget -->
+    <div id="question-nav">
+        <p>Total Questions: <span id="total-questions">0</span></p>
+        <div id="question-tracker"></div>
+    </div>
 
     <p id="timer">Time Left: 3:00:00</p>
 
