@@ -98,7 +98,15 @@ function updateNavigator() {
     quizData.forEach((_, index) => {
         let button = document.createElement("button");
         button.textContent = index + 1;
-        button.classList.add(userAnswers[index] ? "answered" : "unanswered");
+
+        if (userAnswers[index]) {
+            button.style.backgroundColor = "green"; // Answered questions in green
+            button.style.color = "white";
+        } else {
+            button.style.backgroundColor = "red"; // Unanswered questions in red
+            button.style.color = "white";
+        }
+
         button.onclick = () => goToQuestion(index);
         tracker.appendChild(button);
     });
@@ -125,6 +133,14 @@ function submitQuiz() {
 function goToAnswerPage() {
     localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
     window.location.href = "answer.html";
+}
+
+// Reset quiz on logout
+function logout() {
+    localStorage.removeItem("quizAnswers");
+    localStorage.removeItem("quizStartTime");
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "index.html"; // Redirect to login page
 }
 
 // Update navigation button visibility
