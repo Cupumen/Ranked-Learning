@@ -1,3 +1,24 @@
+// Dummy account for login
+const dummyAccount = {
+    id: "test",
+    password: "password123"
+};
+
+function login() {
+    const enteredId = document.getElementById("student-id").value;
+    const enteredPassword = document.getElementById("student-password").value;
+    const loginError = document.getElementById("login-error");
+
+    if (enteredId === dummyAccount.id && enteredPassword === dummyAccount.password) {
+        // Hide login, show quiz
+        document.getElementById("login-container").style.display = "none";
+        document.getElementById("quiz-container").style.display = "block";
+    } else {
+        loginError.textContent = "Invalid ID or Password!";
+    }
+}
+
+// Physics Quiz Questions
 const questions = [
     { question: "What is the unit of force?", choices: ["Newton", "Watt", "Joule"], answer: "Newton" },
     { question: "What is the acceleration due to gravity on Earth?", choices: ["9.8 m/s²", "5 m/s²", "12 m/s²"], answer: "9.8 m/s²" },
