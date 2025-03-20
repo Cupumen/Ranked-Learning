@@ -94,7 +94,7 @@ function submitQuiz() {
 
     document.getElementById("question").textContent = "Quiz Submitted!";
     document.getElementById("options").innerHTML = "";
-    document.getElementById("score-display").textContent = `Your Score: ${finalScore}`;
+    document.getElementById("progress").textContent = `Your Score: ${finalScore}`;
     document.getElementById("next-btn").style.display = "none";
     document.getElementById("back-btn").style.display = "none";
     document.getElementById("submit-btn").style.display = "none";
