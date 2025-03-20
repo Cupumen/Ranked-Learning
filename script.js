@@ -1,109 +1,78 @@
-// Dummy account for login
-const dummyAccount = {
-    id: "test",
-    password: "password123"
-};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-function login() {
-    const enteredId = document.getElementById("student-id").value;
-    const enteredPassword = document.getElementById("student-password").value;
-    const loginError = document.getElementById("login-error");
+    <div id="quiz-container">
+        <h1>Physics Timed Quiz</h1>
+        <p id="timer">Time: <span id="time-left">30</span>s</p>
+        <p id="score">Score: <span id="current-score">0</span></p>
 
-    if (enteredId === dummyAccount.id && enteredPassword === dummyAccount.password) {
-        // Hide login, show quiz
-        document.getElementById("login-container").style.display = "none";
-        document.getElementById("quiz-container").style.display = "block";
-    } else {
-        loginError.textContent = "Invalid ID or Password!";
-    }
-}
+        <form id="quiz-form">
+            <fieldset>
+                <legend>1. What is the unit of force?</legend>
+                <input type="radio" name="q1" value="Newton"> Newton<br>
+                <input type="radio" name="q1" value="Watt"> Watt<br>
+                <input type="radio" name="q1" value="Joule"> Joule<br>
+            </fieldset>
 
-// Physics Quiz Questions
-const questions = [
-    { question: "What is the unit of force?", choices: ["Newton", "Watt", "Joule"], answer: "Newton" },
-    { question: "What is the acceleration due to gravity on Earth?", choices: ["9.8 m/s²", "5 m/s²", "12 m/s²"], answer: "9.8 m/s²" },
-    { question: "Which law states that an object at rest stays at rest unless acted upon by an external force?", choices: ["Newton's First Law", "Newton's Second Law", "Newton's Third Law"], answer: "Newton's First Law" },
-    { question: "What type of energy is stored in a stretched rubber band?", choices: ["Kinetic Energy", "Potential Energy", "Thermal Energy"], answer: "Potential Energy" },
-    { question: "Which of these is an example of a scalar quantity?", choices: ["Velocity", "Acceleration", "Temperature"], answer: "Temperature" },
-    { question: "What is the formula for kinetic energy?", choices: ["KE = 1/2 mv²", "KE = mgh", "KE = Fd"], answer: "KE = 1/2 mv²" },
-    { question: "What does Ohm's Law state?", choices: ["V = IR", "F = ma", "P = VI"], answer: "V = IR" },
-    { question: "Which type of wave requires a medium to travel?", choices: ["Electromagnetic Wave", "Sound Wave", "Light Wave"], answer: "Sound Wave" },
-    { question: "What is the SI unit of power?", choices: ["Joule", "Watt", "Newton"], answer: "Watt" },
-    { question: "Which planet has the strongest gravitational field?", choices: ["Earth", "Jupiter", "Mars"], answer: "Jupiter" }
-];
+            <fieldset>
+                <legend>2. What is the acceleration due to gravity on Earth?</legend>
+                <input type="radio" name="q2" value="9.8 m/s²"> 9.8 m/s²<br>
+                <input type="radio" name="q2" value="5 m/s²"> 5 m/s²<br>
+                <input type="radio" name="q2" value="12 m/s²"> 12 m/s²<br>
+            </fieldset>
 
-let currentQuestion = 0;
-let score = 0;
-let timeLeft = 30;
-let timer;
+            <fieldset>
+                <legend>3. Which law states that an object at rest stays at rest unless acted upon?</legend>
+                <input type="radio" name="q3" value="Newton's First Law"> Newton's First Law<br>
+                <input type="radio" name="q3" value="Newton's Second Law"> Newton's Second Law<br>
+                <input type="radio" name="q3" value="Newton's Third Law"> Newton's Third Law<br>
+            </fieldset>
 
-const questionEl = document.getElementById("question");
-const choicesEl = document.getElementById("choices");
-const scoreEl = document.getElementById("score");
-const timerEl = document.getElementById("timer");
-const startBtn = document.getElementById("start-btn");
-const leaderboardEl = document.getElementById("leaderboard");
+            <button type="button" onclick="submitQuiz()">Submit</button>
+        </form>
 
-startBtn.addEventListener("click", startQuiz);
+        <p id="quiz-result"></p>
+    </div>
 
-function startQuiz() {
-    startBtn.style.display = "none";
-    loadQuestion();
-    timer = setInterval(updateTimer, 1000);
-}
+    <script>
+        let timeLeft = 30;
+        let timer = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                document.getElementById("time-left").textContent = timeLeft;
+            } else {
+                clearInterval(timer);
+                submitQuiz();
+            }
+        }, 1000);
 
-function updateTimer() {
-    if (timeLeft > 0) {
-        timeLeft--;
-        timerEl.textContent = `Time: ${timeLeft}s`;
-    } else {
-        endQuiz();
-    }
-}
+        function submitQuiz() {
+            clearInterval(timer);
+            let score = 0;
+            const answers = {
+                q1: "Newton",
+                q2: "9.8 m/s²",
+                q3: "Newton's First Law"
+            };
 
-function loadQuestion() {
-    if (currentQuestion < questions.length) {
-        let q = questions[currentQuestion];
-        questionEl.textContent = q.question;
-        choicesEl.innerHTML = "";
-        q.choices.forEach(choice => {
-            let btn = document.createElement("button");
-            btn.textContent = choice;
-            btn.onclick = () => checkAnswer(choice);
-            choicesEl.appendChild(btn);
-        });
-    } else {
-        endQuiz();
-    }
-}
+            for (let key in answers) {
+                let selected = document.querySelector(`input[name="${key}"]:checked`);
+                if (selected && selected.value === answers[key]) {
+                    score += 10;
+                }
+            }
 
-function checkAnswer(choice) {
-    if (choice === questions[currentQuestion].answer) {
-        score += 10;
-        scoreEl.textContent = `Score: ${score}`;
-    }
-    currentQuestion++;
-    loadQuestion();
-}
+            document.getElementById("quiz-result").textContent = `Quiz Over! Your Score: ${score}`;
+            document.getElementById("current-score").textContent = score;
+        }
+    </script>
 
-function endQuiz() {
-    clearInterval(timer);
-    questionEl.textContent = "Quiz Over!";
-    choicesEl.innerHTML = "";
-    startBtn.style.display = "block";
-    updateLeaderboard();
-}
-
-function updateLeaderboard() {
-    let scores = JSON.parse(localStorage.getItem("leaderboard")) || [];
-    scores.push(score);
-    scores.sort((a, b) => b - a);
-    localStorage.setItem("leaderboard", JSON.stringify(scores));
-    
-    leaderboardEl.innerHTML = "";
-    scores.slice(0, 5).forEach((s, i) => {
-        let li = document.createElement("li");
-        li.textContent = `#${i + 1} - ${s} pts`;
-        leaderboardEl.appendChild(li);
-    });
-}
+</body>
+</html>
