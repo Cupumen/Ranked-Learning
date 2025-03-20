@@ -7,10 +7,11 @@ const quizData = [
 
 let currentQuestionIndex = 0;
 let userAnswers = JSON.parse(localStorage.getItem("quizAnswers")) || new Array(quizData.length).fill(""); 
+
+// Handle quiz timer
 let startTime = localStorage.getItem("quizStartTime");
 
-// If no start time, set it now
-if (!startTime) {
+if (!startTime || Date.now() - parseInt(startTime) >= 3 * 60 * 60 * 1000) {
     startTime = Date.now();
     localStorage.setItem("quizStartTime", startTime);
 }
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadQuestion();
     updateNavigator();
     updateTimer();
-    setInterval(updateTimer, 1000); // Updates every second
+    setInterval(updateTimer, 1000); // Update timer every second
 });
 
 // Load the current question
@@ -33,9 +34,10 @@ function loadQuestion() {
     } else {
         document.getElementById("question").textContent = "Gagal memuat soal!";
     }
+    updateNavigationButtons();
 }
 
-// Update timer and handle time expiration
+// Update the timer and auto-submit if expired
 function updateTimer() {
     let now = Date.now();
     let remainingTime = endTime - now;
@@ -111,12 +113,23 @@ function goToQuestion(index) {
     updateNavigator();
 }
 
+// Submit quiz with confirmation
+function submitQuiz() {
+    let confirmation = confirm("Apakah Anda yakin ingin mengumpulkan jawaban?");
+    if (confirmation) {
+        goToAnswerPage();
+    }
+}
+
 // Submit quiz and redirect to answer.html
 function goToAnswerPage() {
-    try {
-        localStorage.setItem("quizAnswers", JSON.stringify(userAnswers)); // Ensure answers are saved
-        window.location.href = "answer.html"; // Redirect to answer review page
-    } catch (error) {
-        alert("Terjadi kesalahan saat menyimpan jawaban. Silakan coba lagi.");
-    }
+    localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
+    window.location.href = "answer.html";
+}
+
+// Update navigation button visibility
+function updateNavigationButtons() {
+    document.getElementById("prev-btn").style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
+    document.getElementById("next-btn").style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
+    document.getElementById("submit-btn").style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
 }
