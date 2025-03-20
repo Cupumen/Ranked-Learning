@@ -13,12 +13,8 @@
     <div id="quiz-container">
         <p id="question">Question goes here...</p>
 
-        <div id="answers">
-            <label><input type="radio" name="answer" value="A"> <span id="optionA"></span></label><br>
-            <label><input type="radio" name="answer" value="B"> <span id="optionB"></span></label><br>
-            <label><input type="radio" name="answer" value="C"> <span id="optionC"></span></label><br>
-            <label><input type="radio" name="answer" value="D"> <span id="optionD"></span></label>
-        </div>
+        <label for="answer">Your Answer:</label>
+        <input type="text" id="answer" placeholder="e.g. 3.5" pattern="\d+(\.\d)?" required>
 
         <button onclick="prevQuestion()">Back</button>
         <button onclick="nextQuestion()">Next</button>
