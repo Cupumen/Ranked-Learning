@@ -6,27 +6,33 @@ const quizData = [
 ];
 
 let currentQuestionIndex = 0;
-let userAnswers = JSON.parse(localStorage.getItem("quizAnswers")) || new Array(quizData.length).fill(""); 
+let userAnswers = JSON.parse(localStorage.getItem("quizAnswers")) || new Array(quizData.length).fill("");
 
-// Handle quiz timer
+// Ensure user is logged in
+document.addEventListener("DOMContentLoaded", function () {
+    if (!localStorage.getItem("loggedInUser")) {
+        alert("Silakan login terlebih dahulu.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    loadQuestion();
+    updateNavigator();
+    updateTimer();
+    setInterval(updateTimer, 1000);
+});
+
+// Timer setup
 let startTime = localStorage.getItem("quizStartTime");
-
 if (!startTime || Date.now() - parseInt(startTime) >= 3 * 60 * 60 * 1000) {
     startTime = Date.now();
     localStorage.setItem("quizStartTime", startTime);
 }
 
-const quizDuration = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+const quizDuration = 3 * 60 * 60 * 1000;
 const endTime = parseInt(startTime) + quizDuration;
 
-document.addEventListener("DOMContentLoaded", function () {
-    loadQuestion();
-    updateNavigator();
-    updateTimer();
-    setInterval(updateTimer, 1000); // Update timer every second
-});
-
-// Load the current question
+// Load current question
 function loadQuestion() {
     if (currentQuestionIndex >= 0 && currentQuestionIndex < quizData.length) {
         document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
@@ -37,7 +43,7 @@ function loadQuestion() {
     updateNavigationButtons();
 }
 
-// Update the timer and auto-submit if expired
+// Update timer
 function updateTimer() {
     let now = Date.now();
     let remainingTime = endTime - now;
@@ -45,7 +51,7 @@ function updateTimer() {
     if (remainingTime <= 0) {
         clearInterval(updateTimer);
         alert("Waktu habis! Jawaban akan dikumpulkan.");
-        goToAnswerPage();
+        submitQuiz();
         return;
     }
 
@@ -56,7 +62,7 @@ function updateTimer() {
     document.getElementById("timer").textContent = `Sisa Waktu: ${hours}j ${minutes}m ${seconds}d`;
 }
 
-// Save the user's answer
+// Save answer
 function saveAnswer() {
     let input = document.getElementById("answer").value;
     let regex = /^\d+(\.\d{1})?$/;
@@ -72,7 +78,7 @@ function saveAnswer() {
     alert("Jawaban berhasil disimpan!");
 }
 
-// Move to next question
+// Navigation functions
 function nextQuestion() {
     if (currentQuestionIndex < quizData.length - 1) {
         currentQuestionIndex++;
@@ -81,7 +87,6 @@ function nextQuestion() {
     }
 }
 
-// Move to previous question
 function prevQuestion() {
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
@@ -90,7 +95,7 @@ function prevQuestion() {
     }
 }
 
-// Update the question navigator
+// Update question tracker
 function updateNavigator() {
     let tracker = document.getElementById("question-tracker");
     tracker.innerHTML = "";
@@ -98,15 +103,8 @@ function updateNavigator() {
     quizData.forEach((_, index) => {
         let button = document.createElement("button");
         button.textContent = index + 1;
-
-        if (userAnswers[index]) {
-            button.style.backgroundColor = "green"; // Answered questions in green
-            button.style.color = "white";
-        } else {
-            button.style.backgroundColor = "red"; // Unanswered questions in red
-            button.style.color = "white";
-        }
-
+        button.style.backgroundColor = userAnswers[index] ? "green" : "red";
+        button.style.color = "white";
         button.onclick = () => goToQuestion(index);
         tracker.appendChild(button);
     });
@@ -114,7 +112,7 @@ function updateNavigator() {
     document.getElementById("total-questions").textContent = quizData.length;
 }
 
-// Jump to a specific question
+// Jump to a question
 function goToQuestion(index) {
     currentQuestionIndex = index;
     loadQuestion();
@@ -125,22 +123,16 @@ function goToQuestion(index) {
 function submitQuiz() {
     let confirmation = confirm("Apakah Anda yakin ingin mengumpulkan jawaban?");
     if (confirmation) {
-        goToAnswerPage();
+        localStorage.removeItem("quizAnswers"); // Reset answers after submission
+        localStorage.removeItem("quizStartTime");
+        window.location.href = "answer.html"; // Redirect to answer review page
     }
 }
 
-// Submit quiz and redirect to answer.html
-function goToAnswerPage() {
-    localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
-    window.location.href = "answer.html";
-}
-
-// Reset quiz on logout
+// Logout function (does NOT clear quiz answers)
 function logout() {
-    localStorage.removeItem("quizAnswers");
-    localStorage.removeItem("quizStartTime");
     localStorage.removeItem("loggedInUser");
-    window.location.href = "index.html"; // Redirect to login page
+    window.location.href = "index.html"; // Redirect to login
 }
 
 // Update navigation button visibility
