@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physics Timed Quiz</title>
+    <title>Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Login Page -->
     <div id="login-container">
         <h1>Student Login</h1>
-        <form action="quiz.html" onsubmit="return validateLogin()">
+        <form onsubmit="return validateLogin()">
             <input type="text" id="student-id" placeholder="Enter ID" required>
             <input type="password" id="student-password" placeholder="Enter Password" required>
             <button type="submit">Login</button>
@@ -19,19 +18,6 @@
         <p id="login-error" style="color: red;"></p>
     </div>
 
-    <script>
-        function validateLogin() {
-            const enteredId = document.getElementById("student-id").value;
-            const enteredPassword = document.getElementById("student-password").value;
-
-            if (enteredId === "test" && enteredPassword === "password123") {
-                return true; // Redirect to quiz.html
-            } else {
-                document.getElementById("login-error").textContent = "Invalid ID or Password!";
-                return false; // Prevent form submission
-            }
-        }
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
