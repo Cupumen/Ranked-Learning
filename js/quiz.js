@@ -41,6 +41,10 @@ function saveAnswer() {
 }
 
 function submitQuiz() {
+    if (!confirm("Apakah Anda yakin ingin mengumpulkan jawaban?")) {
+        return;
+    }
+
     saveAnswer();
     clearInterval(timerInterval);
 
@@ -51,8 +55,9 @@ function submitQuiz() {
         }
     }
 
-    alert(`Quiz submitted! Your score: ${score} / ${questions.length}`);
-    updateLeaderboard(score);
+    let finalScore = (score / questions.length) * 100; // Scale to 100
+    alert(`Quiz submitted! Your score: ${finalScore.toFixed(1)} / 100`);
+    updateLeaderboard(finalScore);
     window.location.href = "dashboard.html";
 }
 
