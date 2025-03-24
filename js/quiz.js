@@ -8,73 +8,37 @@ const quizData = [
 let currentQuestionIndex = 0;
 let userAnswers = JSON.parse(localStorage.getItem("quizAnswers")) || new Array(quizData.length).fill("");
 
-// Debugging function to show errors
-function showError(message) {
-    console.error("ERROR:", message);
-    let errorBox = document.getElementById("error-message");
-    if (errorBox) {
-        errorBox.innerHTML = message;
-        errorBox.style.display = "block";
-    }
-}
-
 // Ensure user is logged in
 document.addEventListener("DOMContentLoaded", function () {
     try {
         if (!localStorage.getItem("loggedInUser")) {
-            throw new Error("Silakan login terlebih dahulu.");
+            alert("Silakan login terlebih dahulu.");
+            window.location.href = "index.html";
+            return;
         }
 
-        document.getElementById("total-questions").textContent = quizData.length;
+        // Display total questions first
+        document.getElementById("total-questions").textContent = `Total Soal: ${quizData.length}`;
+
         loadQuestion();
         updateNavigator();
-        startTimer();
+        updateNavigationButtons();
+        updateTimer();
+        setInterval(updateTimer, 1000);
     } catch (error) {
-        showError(error.message);
-        window.location.href = "index.html";
+        showError("Initialization error: " + error.message);
     }
 });
 
 // Timer setup
-function startTimer() {
-    try {
-        let startTime = parseInt(localStorage.getItem("quizStartTime")) || Date.now();
-        const quizDuration = 3 * 60 * 60 * 1000; // 3 hours
-        let endTime = startTime + quizDuration;
-
-        localStorage.setItem("quizStartTime", startTime);
-        localStorage.setItem("quizEndTime", endTime);
-
-        updateTimer();
-        setInterval(updateTimer, 1000);
-    } catch (error) {
-        showError("Timer error: " + error.message);
-    }
+let startTime = localStorage.getItem("quizStartTime");
+if (!startTime || Date.now() - parseInt(startTime) >= 3 * 60 * 60 * 1000) {
+    startTime = Date.now();
+    localStorage.setItem("quizStartTime", startTime);
 }
 
-// Update timer
-function updateTimer() {
-    try {
-        let now = Date.now();
-        let endTime = parseInt(localStorage.getItem("quizEndTime"));
-        let remainingTime = endTime - now;
-
-        if (remainingTime <= 0) {
-            document.getElementById("timer").textContent = "Time Left: 00:00:00";
-            alert("Waktu habis! Jawaban akan dikumpulkan.");
-            submitQuiz();
-            return;
-        }
-
-        let hours = String(Math.floor(remainingTime / (1000 * 60 * 60))).padStart(2, '0');
-        let minutes = String(Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-        let seconds = String(Math.floor((remainingTime % (1000 * 60)) / 1000)).padStart(2, '0');
-
-        document.getElementById("timer").textContent = `Time Left: ${hours}:${minutes}:${seconds}`;
-    } catch (error) {
-        showError("Update timer error: " + error.message);
-    }
-}
+const quizDuration = 3 * 60 * 60 * 1000;
+const endTime = parseInt(startTime) + quizDuration;
 
 // Load current question
 function loadQuestion() {
@@ -83,11 +47,34 @@ function loadQuestion() {
             document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
             document.getElementById("answer").value = userAnswers[currentQuestionIndex] || "";
         } else {
-            throw new Error("Soal tidak ditemukan!");
+            document.getElementById("question").textContent = "Gagal memuat soal!";
         }
         updateNavigationButtons();
     } catch (error) {
         showError("Load question error: " + error.message);
+    }
+}
+
+// Update timer
+function updateTimer() {
+    try {
+        let now = Date.now();
+        let remainingTime = endTime - now;
+
+        if (remainingTime <= 0) {
+            clearInterval(updateTimer);
+            alert("Waktu habis! Jawaban akan dikumpulkan.");
+            submitQuiz();
+            return;
+        }
+
+        let hours = Math.floor(remainingTime / (1000 * 60 * 60));
+        let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+        document.getElementById("timer").textContent = `Sisa Waktu: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } catch (error) {
+        showError("Timer error: " + error.message);
     }
 }
 
@@ -98,7 +85,8 @@ function saveAnswer() {
         let regex = /^\d+(\.\d{1})?$/;
 
         if (!regex.test(input) && input !== "") {
-            throw new Error("Jawaban harus berupa angka dengan satu angka desimal! Contoh: 10.2");
+            alert("Jawaban harus berupa angka dengan satu angka desimal! Contoh: 10.2");
+            return;
         }
 
         userAnswers[currentQuestionIndex] = input;
@@ -112,26 +100,18 @@ function saveAnswer() {
 
 // Navigation functions
 function nextQuestion() {
-    try {
-        if (currentQuestionIndex < quizData.length - 1) {
-            currentQuestionIndex++;
-            loadQuestion();
-            updateNavigator();
-        }
-    } catch (error) {
-        showError("Next question error: " + error.message);
+    if (currentQuestionIndex < quizData.length - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+        updateNavigator();
     }
 }
 
 function prevQuestion() {
-    try {
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            loadQuestion();
-            updateNavigator();
-        }
-    } catch (error) {
-        showError("Previous question error: " + error.message);
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion();
+        updateNavigator();
     }
 }
 
@@ -149,6 +129,8 @@ function updateNavigator() {
             button.onclick = () => goToQuestion(index);
             tracker.appendChild(button);
         });
+
+        document.getElementById("total-questions").textContent = `Total Soal: ${quizData.length}`;
     } catch (error) {
         showError("Update navigator error: " + error.message);
     }
@@ -156,13 +138,9 @@ function updateNavigator() {
 
 // Jump to a question
 function goToQuestion(index) {
-    try {
-        currentQuestionIndex = index;
-        loadQuestion();
-        updateNavigator();
-    } catch (error) {
-        showError("Go to question error: " + error.message);
-    }
+    currentQuestionIndex = index;
+    loadQuestion();
+    updateNavigator();
 }
 
 // Submit quiz with confirmation
@@ -170,10 +148,9 @@ function submitQuiz() {
     try {
         let confirmation = confirm("Apakah Anda yakin ingin mengumpulkan jawaban?");
         if (confirmation) {
-            localStorage.removeItem("quizAnswers"); // ✅ Reset answers after submission
+            localStorage.removeItem("quizAnswers"); // Reset answers after submission
             localStorage.removeItem("quizStartTime");
-            localStorage.removeItem("quizEndTime");
-            window.location.href = "answer.html";
+            window.location.href = "answer.html"; // Redirect to answer review page
         }
     } catch (error) {
         showError("Submit quiz error: " + error.message);
@@ -184,7 +161,7 @@ function submitQuiz() {
 function logout() {
     try {
         localStorage.removeItem("loggedInUser");
-        window.location.href = "index.html";
+        window.location.href = "index.html"; // Redirect to login
     } catch (error) {
         showError("Logout error: " + error.message);
     }
@@ -193,13 +170,26 @@ function logout() {
 // Update navigation button visibility
 function updateNavigationButtons() {
     try {
-        document.getElementById("prev-btn").style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
-        document.getElementById("next-btn").style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
-
+        let prevBtn = document.getElementById("prev-btn");
+        let nextBtn = document.getElementById("next-btn");
         let submitBtn = document.getElementById("submit-btn");
-        submitBtn.style.display = "inline-block";
-        submitBtn.disabled = currentQuestionIndex !== quizData.length - 1;
+
+        if (prevBtn) prevBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
+        if (nextBtn) nextBtn.style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
+        if (submitBtn) {
+            submitBtn.style.display = "inline-block";
+            submitBtn.disabled = currentQuestionIndex !== quizData.length - 1;
+        }
     } catch (error) {
         showError("Update navigation buttons error: " + error.message);
+    }
+}
+
+// Show error messages
+function showError(message) {
+    console.error(message);
+    let errorDiv = document.getElementById("error-message");
+    if (errorDiv) {
+        errorDiv.innerHTML = `<p style="color:red;">${message}</p>`;
     }
 }
