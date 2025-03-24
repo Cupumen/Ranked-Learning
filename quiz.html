@@ -3,45 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Try Out OSK 2025</title>
-    <link rel="stylesheet" href="css/quiz.css">
+    <title>Kuis Fisika</title>
+    <style>
+        .answered { background-color: lightgreen; }
+        .unanswered { background-color: lightcoral; }
+    </style>
 </head>
 <body>
+    <h1>Kuis Fisika</h1>
+    <p id="total-questions"></p>
+    <p id="timer">Sisa Waktu: --:--:--</p>
 
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <h1>Try Out OSK 2025</h1>
-            <p class="description">Jawablah dengan desimal satu angka setelah koma. Contoh: <strong>10.2</strong> atau <strong>9.3</strong></p>
-        </header>
-
-        <!-- Quiz Section -->
-        <div id="quiz-container">
-            <p id="question" class="question-text">Loading question...</p>
-
-            <label for="answer" class="input-label">Jawaban Anda:</label>
-            <input type="text" id="answer" class="answer-input" placeholder="e.g. 3.5" pattern="\d+(\.\d)?" required>
-            <p id="error-message" class="error-message"></p>
-
-            <div class="button-group">
-                <button onclick="prevQuestion()" class="btn btn-secondary">Back</button>
-                <button onclick="saveAnswer()" class="btn btn-primary">Save</button>
-                <button onclick="nextQuestion()" class="btn btn-secondary">Next</button>
-                <button id="submit-btn" onclick="goToAnswerPage()" class="btn btn-submit">Submit</button>
-            </div>
-        </div>
-
-        <!-- Question Tracker -->
-        <div id="question-nav">
-            <p>Total Questions: <span id="total-questions">0</span></p>
-            <div id="question-tracker"></div>
-        </div>
-
-        <!-- Timer -->
-        <p id="timer">Time Left: <span id="time-left">3:00:00</span></p>
+    <div>
+        <p id="question">Memuat soal...</p>
+        <input type="text" id="answer" placeholder="Masukkan jawaban Anda">
+        <button onclick="saveAnswer()">Simpan Jawaban</button>
     </div>
 
-    <script src="js/quiz.js"></script>
+    <div>
+        <button id="prev-btn" onclick="prevQuestion()">Sebelumnya</button>
+        <button id="next-btn" onclick="nextQuestion()">Selanjutnya</button>
+        <button id="submit-btn" onclick="submitQuiz()">Kumpulkan</button>
+    </div>
 
+    <div id="question-tracker"></div>
+
+    <button onclick="logout()">Logout</button>
+
+    <script src="quiz.js"></script>
 </body>
 </html>
