@@ -151,11 +151,15 @@ function submitQuiz() {
             localStorage.removeItem("quizStartTime");
 
             // Prevent multiple submissions
-            document.getElementById("submit-btn").disabled = true;
-            document.getElementById("submit-btn").textContent = "Mengumpulkan...";
-            
+            let submitBtn = document.getElementById("submit-btn");
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Mengumpulkan...";
+            }
+
+            // Ensure redirection after a slight delay
             setTimeout(() => {
-                window.location.href = "answer.html"; // Redirect to answer review page
+                window.location.href = "answer.html";
             }, 1000);
         }
     } catch (error) {
