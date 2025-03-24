@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Display total questions first
         document.getElementById("total-questions").textContent = `Total Soal: ${quizData.length}`;
 
         loadQuestion();
@@ -150,7 +149,14 @@ function submitQuiz() {
         if (confirmation) {
             localStorage.removeItem("quizAnswers"); // Reset answers after submission
             localStorage.removeItem("quizStartTime");
-            window.location.href = "answer.html"; // Redirect to answer review page
+
+            // Prevent multiple submissions
+            document.getElementById("submit-btn").disabled = true;
+            document.getElementById("submit-btn").textContent = "Mengumpulkan...";
+            
+            setTimeout(() => {
+                window.location.href = "answer.html"; // Redirect to answer review page
+            }, 1000);
         }
     } catch (error) {
         showError("Submit quiz error: " + error.message);
@@ -177,7 +183,7 @@ function updateNavigationButtons() {
         if (prevBtn) prevBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
         if (nextBtn) nextBtn.style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
         if (submitBtn) {
-            submitBtn.style.display = "inline-block";
+            submitBtn.style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
             submitBtn.disabled = currentQuestionIndex !== quizData.length - 1;
         }
     } catch (error) {
