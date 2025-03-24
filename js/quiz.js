@@ -16,41 +16,44 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+    document.getElementById("total-questions").textContent = quizData.length; // ✅ Show total questions first
+
     loadQuestion();
     updateNavigator();
-    startTimer();  // Fixed: Ensure timer updates every second
+    startTimer();  // ✅ Proper countdown ticking
 });
 
 // Timer setup
-let startTime = parseInt(localStorage.getItem("quizStartTime")) || Date.now();
-const quizDuration = 3 * 60 * 60 * 1000; // 3 hours
-const endTime = startTime + quizDuration;
-
-localStorage.setItem("quizStartTime", startTime);
-
-// Start and update timer every second
 function startTimer() {
-    updateTimer(); // Update immediately
-    setInterval(updateTimer, 1000); // Now properly updates every second
+    let startTime = parseInt(localStorage.getItem("quizStartTime")) || Date.now();
+    const quizDuration = 3 * 60 * 60 * 1000; // 3 hours
+    let endTime = startTime + quizDuration;
+
+    localStorage.setItem("quizStartTime", startTime);
+    localStorage.setItem("quizEndTime", endTime);
+
+    updateTimer();  // ✅ Ensure first update is instant
+    setInterval(updateTimer, 1000); // ✅ Correct interval for ticking countdown
 }
 
 // Update timer
 function updateTimer() {
     let now = Date.now();
+    let endTime = parseInt(localStorage.getItem("quizEndTime"));
     let remainingTime = endTime - now;
 
     if (remainingTime <= 0) {
-        clearInterval(updateTimer);
+        document.getElementById("timer").textContent = "Time Left: 00:00:00";
         alert("Waktu habis! Jawaban akan dikumpulkan.");
         submitQuiz();
         return;
     }
 
-    let hours = Math.floor(remainingTime / (1000 * 60 * 60));
-    let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-    let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+    let hours = String(Math.floor(remainingTime / (1000 * 60 * 60))).padStart(2, '0');
+    let minutes = String(Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+    let seconds = String(Math.floor((remainingTime % (1000 * 60)) / 1000)).padStart(2, '0');
 
-    document.getElementById("timer").textContent = `Sisa Waktu: ${hours}j ${minutes}m ${seconds}d`;
+    document.getElementById("timer").textContent = `Time Left: ${hours}:${minutes}:${seconds}`;
 }
 
 // Load current question
@@ -110,8 +113,6 @@ function updateNavigator() {
         button.onclick = () => goToQuestion(index);
         tracker.appendChild(button);
     });
-
-    document.getElementById("total-questions").textContent = quizData.length;
 }
 
 // Jump to a question
@@ -125,8 +126,9 @@ function goToQuestion(index) {
 function submitQuiz() {
     let confirmation = confirm("Apakah Anda yakin ingin mengumpulkan jawaban?");
     if (confirmation) {
-        localStorage.removeItem("quizAnswers"); // Reset answers after submission
+        localStorage.removeItem("quizAnswers"); // ✅ Reset answers after submission
         localStorage.removeItem("quizStartTime");
+        localStorage.removeItem("quizEndTime"); // ✅ Remove stored end time
         window.location.href = "answer.html"; // Redirect to answer review page
     }
 }
