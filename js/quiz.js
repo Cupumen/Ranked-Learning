@@ -122,15 +122,20 @@ function goToQuestion(index) {
 
 // Submit quiz with confirmation
 function submitQuiz() {
+    console.log("submitQuiz() called");
+
     let confirmation = confirm("Apakah Anda yakin ingin mengumpulkan jawaban?");
     if (confirmation) {
-        localStorage.removeItem("quizAnswers"); // Reset answers after submission
+        console.log("User confirmed submission");
+        localStorage.removeItem("quizAnswers"); // Reset answers
         localStorage.removeItem("quizStartTime");
-        window.location.href = "answer.html"; // Redirect to answer review page
+        window.location.href = "answer.html"; // Redirect
+    } else {
+        console.log("User canceled submission");
     }
 }
 
-// Logout function (does NOT clear quiz answers)
+// Logout function
 function logout() {
     localStorage.removeItem("loggedInUser");
     window.location.href = "index.html"; // Redirect to login
@@ -149,5 +154,5 @@ function updateNavigationButtons() {
 
     prevBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
     nextBtn.style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
-    submitBtn.style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
+    submitBtn.style.display = "inline-block"; // Always visible for debugging
 }
