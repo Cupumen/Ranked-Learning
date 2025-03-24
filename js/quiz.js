@@ -105,7 +105,7 @@ function updateNavigator() {
     quizData.forEach((_, index) => {
         let button = document.createElement("button");
         button.textContent = index + 1;
-        button.classList.add(userAnswers[index] ? "answered" : "unanswered");
+        button.className = userAnswers[index] ? "answered" : "unanswered";
         button.onclick = () => goToQuestion(index);
         tracker.appendChild(button);
     });
@@ -136,17 +136,18 @@ function logout() {
     window.location.href = "index.html"; // Redirect to login
 }
 
-// Update navigation button visibility
+// Ensure all buttons exist before updating UI
 function updateNavigationButtons() {
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
     const submitBtn = document.getElementById("submit-btn");
 
-    if (prevBtn && nextBtn && submitBtn) {
-        prevBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
-        nextBtn.style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
-        submitBtn.style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
-    } else {
-        console.error("Error: Navigation buttons not found in DOM.");
+    if (!prevBtn || !nextBtn || !submitBtn) {
+        console.error("❌ Error: Navigation buttons not found in DOM.");
+        return;
     }
+
+    prevBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
+    nextBtn.style.display = currentQuestionIndex < quizData.length - 1 ? "inline-block" : "none";
+    submitBtn.style.display = currentQuestionIndex === quizData.length - 1 ? "inline-block" : "none";
 }
