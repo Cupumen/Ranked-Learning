@@ -18,29 +18,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadQuestion();
     updateNavigator();
-    updateTimer();
-    setInterval(updateTimer, 1000);
+    startTimer();  // Fixed: Ensure timer updates every second
 });
 
 // Timer setup
-let startTime = localStorage.getItem("quizStartTime");
-if (!startTime || Date.now() - parseInt(startTime) >= 3 * 60 * 60 * 1000) {
-    startTime = Date.now();
-    localStorage.setItem("quizStartTime", startTime);
-}
+let startTime = parseInt(localStorage.getItem("quizStartTime")) || Date.now();
+const quizDuration = 3 * 60 * 60 * 1000; // 3 hours
+const endTime = startTime + quizDuration;
 
-const quizDuration = 3 * 60 * 60 * 1000;
-const endTime = parseInt(startTime) + quizDuration;
+localStorage.setItem("quizStartTime", startTime);
 
-// Load current question
-function loadQuestion() {
-    if (currentQuestionIndex >= 0 && currentQuestionIndex < quizData.length) {
-        document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
-        document.getElementById("answer").value = userAnswers[currentQuestionIndex] || "";
-    } else {
-        document.getElementById("question").textContent = "Gagal memuat soal!";
-    }
-    updateNavigationButtons();
+// Start and update timer every second
+function startTimer() {
+    updateTimer(); // Update immediately
+    setInterval(updateTimer, 1000); // Now properly updates every second
 }
 
 // Update timer
@@ -60,6 +51,17 @@ function updateTimer() {
     let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
 
     document.getElementById("timer").textContent = `Sisa Waktu: ${hours}j ${minutes}m ${seconds}d`;
+}
+
+// Load current question
+function loadQuestion() {
+    if (currentQuestionIndex >= 0 && currentQuestionIndex < quizData.length) {
+        document.getElementById("question").textContent = quizData[currentQuestionIndex].question;
+        document.getElementById("answer").value = userAnswers[currentQuestionIndex] || "";
+    } else {
+        document.getElementById("question").textContent = "Gagal memuat soal!";
+    }
+    updateNavigationButtons();
 }
 
 // Save answer
